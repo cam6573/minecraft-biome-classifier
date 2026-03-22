@@ -8,7 +8,7 @@ import matplotlib.pylab as plt
 import shutil
 
 
-
+random.seed(1000)
 
 '''
 biome 1 planes
@@ -21,7 +21,7 @@ biome 35 savanna
 
 PROCCESSED_DIR_PATH = "data/processed/"
 PREPROCCESSED_DIR_PATH = "data/raw/preprocessed_data/biome_"
-NUMBER_OF_SAMPLES_PER_BIOME = 500
+NUMBER_OF_SAMPLES_PER_BIOME = 600
 
 def get_image_entropy(img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -84,6 +84,7 @@ def main():
               (35, "savanna")]
     
     for biome in biomes:
+        print(f"Processing Biome: {biome[1]}")
         get_biomes(folder_num=biome[0], biome_name=biome[1])
 
 
