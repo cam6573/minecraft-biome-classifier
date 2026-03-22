@@ -23,6 +23,32 @@ PROCCESSED_DIR_PATH = "data/processed/"
 PREPROCCESSED_DIR_PATH = "data/raw/preprocessed_data/biome_"
 NUMBER_OF_SAMPLES_PER_BIOME = 500
 
+def get_image_entropy(img):
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    hist = cv2.calcHist([gray], [0], None, [256], [0, 256])
+    hist = hist / hist.sum()
+    hist = hist[hist > 0]
+    return -np.sum(hist * np.log2(hist))
+
+def is_trash(img_path):
+    try:        
+        img = cv2.imread(img_path)
+    except:
+        print(f"could not open image: {img_path}")
+    if img is None:
+        return None
+
+    color_score = img.std()
+    entropy = get_image_entropy(img)
+
+    if color_score < 25 or entropy < 5.0:
+        return True
+    return False
+
+
+
+
+
 def get_biomes(folder_num, biome_name):
     os.makedirs(PROCCESSED_DIR_PATH + str(biome_name))
     try: 
@@ -38,13 +64,14 @@ def get_biomes(folder_num, biome_name):
         if(already_collected_set.__contains__(current_biome_number)):
                 continue
         else:
-            index += 1
-            already_collected_set.add(current_biome_number)
             source_path = biome[current_biome_number]
-            new_name = f"{biome_name}_{index}.jpg"
-            destination_path = os.path.join(PROCCESSED_DIR_PATH, biome_name, new_name)
+            if(not is_trash(img_path=source_path)):
+                new_name = f"{biome_name}_{index}.jpg"
+                destination_path = os.path.join(PROCCESSED_DIR_PATH, biome_name, new_name)
+                already_collected_set.add(current_biome_number)
+                index += 1
 
-            shutil.copyfile(source_path, destination_path)
+                shutil.copyfile(source_path, destination_path)
 
 
 
