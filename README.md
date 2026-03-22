@@ -18,7 +18,10 @@ Set venv
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install kagglehub
+python -m pip install 
+python -m pip install kagglehub pandas numpy matplotlib opencv-python
+
+
 python scripts/download_data.py
 ```
 
