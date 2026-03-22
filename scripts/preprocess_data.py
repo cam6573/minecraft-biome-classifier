@@ -41,15 +41,15 @@ def get_biomes(folder_num, biome_name):
             index += 1
             already_collected_set.add(current_biome_number)
             source_path = biome[current_biome_number]
-            file_name = os.path.basename(source_path)
-            destination_path = os.path.join(PROCCESSED_DIR_PATH, biome_name, file_name)
+            new_name = f"{biome_name}_{index}.jpg"
+            destination_path = os.path.join(PROCCESSED_DIR_PATH, biome_name, new_name)
 
             shutil.copyfile(source_path, destination_path)
 
 
 
 def main():
-    biomes = [(1,"planes"),
+    biomes = [(1,"plains"),
               (2, "desert"),
               (3, "mountains"),
               (6, "swamp"),
@@ -57,7 +57,9 @@ def main():
               (35, "savanna")]
     
     for biome in biomes:
-        pass
+        get_biomes(folder_num=biome[0], biome_name=biome[1])
+
+
 
 if __name__ == "__main__":
     main()
