@@ -22,6 +22,7 @@ python -m pip install
 python -m pip install kagglehub pandas numpy matplotlib opencv-python
 
 
-python scripts/download_data.py
+python code/data_related_scripts/download_data.py
+python code/data_related_scripts/preprocess_data.py 
 ```
 
