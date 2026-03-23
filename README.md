@@ -29,4 +29,6 @@ python code/data_related_scripts/preprocess_data.py
 ```
 
 Process Data: 
-python code/data_related_scripts/process_data.py
+```
+python code/data_related_scripts/HOG_process_data.py
+```
