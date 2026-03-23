@@ -22,13 +22,53 @@ python -m pip install
 python -m pip install kagglehub pandas numpy matplotlib opencv-python scikit-image
 ```
 
-Download DataSet and Select images:
+Download DataSet and Select 600 random images for each biom:
 ```
 python code/data_related_scripts/download_data.py
 python code/data_related_scripts/preprocess_data.py 
 ```
 
-Process Data: 
+Process HOG Data: 
 ```
 python code/data_related_scripts/HOG_process_data.py
+```
+
+
+
+#### Project Structure:
+```
+.
+├── README.md
+├── code
+│   └── data_related_scripts
+│       ├── HOG_process_data.py
+│       ├── download_data.py
+│       └── preprocess_data.py
+└── data
+    ├── preprocessed
+    │   ├── dark_forest
+    │   ├── desert
+    │   ├── mountains
+    │   ├── plains
+    │   ├── savanna
+    │   └── swamp
+    ├── processed
+    │   └── HOG
+    │       ├── HOG_vectors
+    │       │   ├── dark_forest
+    │       │   ├── desert
+    │       │   ├── mountains
+    │       │   ├── plains
+    │       │   ├── savanna
+    │       │   └── swamp
+    │       └── images
+    │           ├── dark_forest
+    │           ├── desert
+    │           ├── mountains
+    │           ├── plains
+    │           ├── savanna
+    │           └── swamp
+    └── raw
+        └── preprocessed_data
+
 ```
