@@ -19,8 +19,8 @@ biome 29 dark forest
 biome 35 savanna 
 '''
 
-PROCCESSED_DIR_PATH = "data/processed/"
-PREPROCCESSED_DIR_PATH = "data/raw/preprocessed_data/biome_"
+PREPROCCESSED_DIR_PATH = "data/preprocessed/"
+RAW_DATA_DIR_PATH = "data/raw/preprocessed_data/biome_"
 NUMBER_OF_SAMPLES_PER_BIOME = 600
 
 def get_image_entropy(img):
@@ -50,11 +50,11 @@ def is_trash(img_path):
 
 
 def get_biomes(folder_num, biome_name):
-    os.makedirs(PROCCESSED_DIR_PATH + str(biome_name))
+    os.makedirs(PREPROCCESSED_DIR_PATH + str(biome_name))
     try: 
-        biome = glob(PREPROCCESSED_DIR_PATH+ str(folder_num) + "/*.jpg")
+        biome = glob(RAW_DATA_DIR_PATH+ str(folder_num) + "/*.jpg")
     except:
-        print("biomes could not be found in " + PREPROCCESSED_DIR_PATH)
+        print("biomes could not be found in " + RAW_DATA_DIR_PATH)
         return
     
     already_collected_set = set()
@@ -67,7 +67,7 @@ def get_biomes(folder_num, biome_name):
             source_path = biome[current_biome_number]
             if(not is_trash(img_path=source_path)):
                 new_name = f"{biome_name}_{index}.jpg"
-                destination_path = os.path.join(PROCCESSED_DIR_PATH, biome_name, new_name)
+                destination_path = os.path.join(PREPROCCESSED_DIR_PATH, biome_name, new_name)
                 already_collected_set.add(current_biome_number)
                 index += 1
 
