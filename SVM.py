@@ -62,8 +62,6 @@ for label in labels:
 X = np.array(X)
 y = np.array(y)
 
-#one vs rest stuff here later
-#y = np.where(y == 'plains', 1, -1)
 print("X shape:", X.shape)
 print("y shape:", y.shape)
 
@@ -74,8 +72,6 @@ print("X_flat shape:", X_flat.shape)
 X_train,X_test,y_train,y_test=train_test_split(X_flat,y,test_size=0.20,random_state=77,stratify=y)
 print("Training set size:", X_train.shape[0])
 print("Test set size:", X_test.shape[0])
-
-#need to do one v rest for multiclass, just start with desert vs savanna
 
 '''
 class SVM:
