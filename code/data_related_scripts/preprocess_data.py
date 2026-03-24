@@ -6,7 +6,7 @@ import random
 import cv2 
 import matplotlib.pylab as plt
 import shutil
-
+import math
 
 random.seed(1000)
 
@@ -18,6 +18,15 @@ biome 6 swamp
 biome 29 dark forest
 biome 35 savanna 
 '''
+
+
+biomes = [(1,"plains"),
+              (2, "desert"),
+              (3, "mountains"),
+              (6, "swamp"),
+              (29, "dark_forest"), 
+              (35, "savanna")]
+    
 
 PREPROCCESSED_DIR_PATH = "data/preprocessed/"
 RAW_DATA_DIR_PATH = "data/raw/preprocessed_data/biome_"
@@ -47,8 +56,6 @@ def is_trash(img_path):
 
 
 
-
-
 def get_biomes(folder_num, biome_name):
     os.makedirs(PREPROCCESSED_DIR_PATH + str(biome_name))
     try: 
@@ -74,20 +81,56 @@ def get_biomes(folder_num, biome_name):
                 shutil.copyfile(source_path, destination_path)
 
 
+def get_all_data():
+    # os.makedirs(os.path.join(PREPROCCESSED_DIR_PATH, "data"))
+    try: 
+        data  = []
+        for biome in biomes:
+            biome_id = biome[0]
+            biome_name = biome[1]
+            files = glob(RAW_DATA_DIR_PATH + str(biome_id) + "/*.jpg")
+            random.shuffle(files)
+            for i in range(600):
+                data.append((biome_name, files[i]))
+        return data
+    except:
+        print("biomes could not be found in " + RAW_DATA_DIR_PATH)
+        return None
+    
+def split_up_data(data: list):
+    random.shuffle(data)
+    print(f"Data Set Size: {(len(data))}")
+    training_data_set_size = math.ceil(len(data) * 0.70)
+    validation_data_set_size = math.ceil(len(data)* 0.15)
+    test_data_set_size = len(data) - training_data_set_size - validation_data_set_size
+    print(f"Training data Set Size: {training_data_set_size}")
+    print(f"Validation data Set Size: {validation_data_set_size}")
+    print(f"Test data Set Size: {test_data_set_size}")
+
+    
+    training_data_set = []
+    validation_data_set = []
+    test_data_set = []
+
+    for i in range(len(data)):
+        if i <= training_data_set_size:
+            training_data_set.append(data[i])
+        elif i <= validation_data_set_size+ training_data_set_size:
+            validation_data_set.append(data[i])
+        else:
+            test_data_set.append(data[i])
+
+    print(f"Actual training data Set Size: {len(training_data_set)}")
+    print(f"Validation data Set Size: {len(validation_data_set)}")
+    print(f"Test data Set Size: {len(test_data_set)}")
+
+
+    return training_data_set, validation_data_set, test_data_set
 
 def main():
-    biomes = [(1,"plains"),
-              (2, "desert"),
-              (3, "mountains"),
-              (6, "swamp"),
-              (29, "dark_forest"), 
-              (35, "savanna")]
-    
-    for biome in biomes:
-        print(f"Processing Biome: {biome[1]}")
-        get_biomes(folder_num=biome[0], biome_name=biome[1])
+        training_data_set, validation_data_set, test_data_set = split_up_data(get_all_data())
 
-
+        os.makedirs
 
 if __name__ == "__main__":
     main()
