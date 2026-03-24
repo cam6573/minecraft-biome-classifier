@@ -14,12 +14,21 @@
 ### How to run project 
 
 Set venv
+Mac
 ```
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install 
 python -m pip install kagglehub pandas numpy matplotlib opencv-python scikit-image
+```
+
+Windows:
+```
+py -m venv .venv
+.venv\Scripts\Activate.ps1
+py -m pip install --upgrade pip
+py -m pip install kagglehub pandas numpy matplotlib opencv-python scikit-image
 ```
 
 Download DataSet and Select 600 random images for each biom:
