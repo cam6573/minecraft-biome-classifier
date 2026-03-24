@@ -4,13 +4,14 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
+from sklearn.multiclass import OneVsRestClassifier
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
 
 
-dataset_path = r"C:\Users\zangr\OneDrive\Desktop\MinecraftBiomes\minecraft-biome-classifier\data"
+dataset_path = "data\\preprocessed"
 labels = os.listdir(dataset_path)
 print("Labels:", labels)
 image_size = (64,20)
@@ -37,7 +38,7 @@ image.show()'''
 
 #image.show()
 
-labels = ['swamp', 'plains']
+#labels = ['swamp', 'plains']
 # Load dataset, resize, scale ###############################
 
 # Loop through each label and process all the images
@@ -58,14 +59,11 @@ for label in labels:
             except Exception as e:
                 print(f"Error processing {picture_path}: {e}")
 
-
-
-
 X = np.array(X)
+y = np.array(y)
 
 #one vs rest stuff here later
-y = np.array(y)
-y = np.where(y == 'swamp', 1, -1)
+#y = np.where(y == 'plains', 1, -1)
 print("X shape:", X.shape)
 print("y shape:", y.shape)
 
@@ -79,20 +77,22 @@ print("Test set size:", X_test.shape[0])
 
 #need to do one v rest for multiclass, just start with desert vs savanna
 
-
+'''
 class SVM:
     """
     A simple linear Support Vector Machine (SVM) implemented from scratch using NumPy.
     Uses gradient descent to optimize the hinge loss with L2 regularization.
     """
 
-    def __init__(self, learning_rate=0.001, lambda_rate=0.01, n_iter=1000):
+    def __init__(self, learning_rate=0.001, lambda_rate=0.01, n_iter=1000, multi_class=False):
         self.learning_rate = learning_rate
         self.lambda_rate = lambda_rate
         self.n_iter = n_iter
         self.w = None
         self.b = None
         self.loss_history = []
+        self.multi_class = multi_class
+        self.classes = None
 
     def compute_loss(self, X, y):
         """
@@ -105,6 +105,21 @@ class SVM:
         return reg_loss + hinge_loss
 
     def fit(self, X, y):
+        if self.multi_class:
+            # Implement one-vs-rest strategy for multi-class classification
+            self.classes = np.unique(y)
+            print("Classes found:", self.classes)
+            self.w = np.zeros((len(self.classes), X.shape[1]))
+            self.b = np.zeros(len(self.classes))
+
+            for cls in enumerate(self.classes):
+                print(f"Training binary classifier for class: {cls}")
+                y_binary = np.where(y == cls, 1, -1)
+                self.binary_fit(X, y_binary) #idx?
+        else:
+            self.binary_fit(X, y)
+
+    def binary_fit(self, X, y):
         """
         Train the SVM model using gradient descent.
         """
@@ -146,33 +161,16 @@ class SVM:
         pred = np.sign(np.dot(X, self.w) + self.b)
         return np.sign(pred)
 
-svm = SVM(learning_rate=0.001, lambda_rate=0.05, n_iter=200)
+svm = SVM(learning_rate=0.001, lambda_rate=0.05, n_iter=20, multi_class=True)
 svm.fit(X_train, y_train)
-
-
-y_pred = svm.predict(X_test)
-
-# Convert back labels for accuracy scoring
-#y_test = np.where(y_test == -1, 0, 1)
-
-
-'''correct = 0
-for i in range(len(X_test)):
-    pred = svm.predict(X_test[i].reshape(1, -1))
-    if pred == y_test[i]:
-        print("correct")
-        correct += 1
-
-accuracy = correct / len(X_test)
-print("Accuracy loop:", accuracy)
 '''
 
-y_pred = svm.predict(X_test)
+'''y_pred = svm.predict(X_test)
 accuracy = np.mean(y_pred == y_test)
 print("Accuracy:", accuracy)
 
 
-'''# Create a DataFrame for visualization
+# Create a DataFrame for visualization
 loss_df = pd.DataFrame({
     'Iteration': range(1, len(svm.loss_history) + 1),
     'Loss': svm.loss_history
@@ -184,14 +182,17 @@ plt.xlabel("Iteration", fontsize=12)
 plt.ylabel("Loss", fontsize=12)
 plt.tight_layout()
 plt.show()
+
+
+
+
 '''
-
-
-
-
 
 # Test with built in function
 model = SVC(kernel='poly')  # tried 'rbf', 'linear' too, worse accuracy
+ovr = OneVsRestClassifier(model)
+# fit model
+ovr.fit(X_train, y_train)
 model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 print("Accuracy(library):", accuracy_score(y_test, y_pred))
