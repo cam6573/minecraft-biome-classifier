@@ -56,53 +56,33 @@ def is_trash(img_path):
 
 
 
-def get_biomes(folder_num, biome_name):
-    os.makedirs(PREPROCCESSED_DIR_PATH + str(biome_name))
-    try: 
-        biome = glob(RAW_DATA_DIR_PATH+ str(folder_num) + "/*.jpg")
-    except:
-        print("biomes could not be found in " + RAW_DATA_DIR_PATH)
-        return
-    
-    already_collected_set = set()
-    index = 0
-    while index < NUMBER_OF_SAMPLES_PER_BIOME:
-        current_biome_number = random.randrange(0,len(biome))
-        if(already_collected_set.__contains__(current_biome_number)):
-                continue
-        else:
-            source_path = biome[current_biome_number]
-            if(not is_trash(img_path=source_path)):
-                new_name = f"{biome_name}_{index}.jpg"
-                destination_path = os.path.join(PREPROCCESSED_DIR_PATH, biome_name, new_name)
-                already_collected_set.add(current_biome_number)
-                index += 1
-
-                shutil.copyfile(source_path, destination_path)
-
-
 def get_all_data():
-    # os.makedirs(os.path.join(PREPROCCESSED_DIR_PATH, "data"))
-    try: 
-        data  = []
-        for biome in biomes:
-            biome_id = biome[0]
-            biome_name = biome[1]
-            files = glob(RAW_DATA_DIR_PATH + str(biome_id) + "/*.jpg")
-            random.shuffle(files)
-            for i in range(600):
-                data.append((biome_name, files[i]))
-        return data
-    except:
-        print("biomes could not be found in " + RAW_DATA_DIR_PATH)
-        return None
+    data = []
+
+    for biome_id, biome_name in biomes:
+        files = glob(RAW_DATA_DIR_PATH + str(biome_id) + "/*.jpg")
+        random.shuffle(files)
+
+        valid_files = []
+        for f in files:
+            if not is_trash(f):
+                valid_files.append(f)
+
+        selected_files = valid_files[:600]
+
+        for f in selected_files:
+            data.append((biome_name, f))
+
+    return data
     
 def split_up_data(data: list):
     random.shuffle(data)
     print(f"Data Set Size: {(len(data))}")
+
     training_data_set_size = math.ceil(len(data) * 0.70)
     validation_data_set_size = math.ceil(len(data)* 0.15)
     test_data_set_size = len(data) - training_data_set_size - validation_data_set_size
+
     print(f"Training data Set Size: {training_data_set_size}")
     print(f"Validation data Set Size: {validation_data_set_size}")
     print(f"Test data Set Size: {test_data_set_size}")
@@ -127,10 +107,37 @@ def split_up_data(data: list):
 
     return training_data_set, validation_data_set, test_data_set
 
-def main():
-        training_data_set, validation_data_set, test_data_set = split_up_data(get_all_data())
 
-        os.makedirs
+def save_files_to(folder_name:str, data:list):  
+    folder_path = os.path.join(PREPROCCESSED_DIR_PATH,folder_name)
+    os.makedirs(folder_path, exist_ok=True)
+    
+    index = 1
+    for f in data:
+        biome_name = f[0]
+        file = f[1]
+
+        file_path = os.path.join(folder_path,(f"{index}_{biome_name}.jpg"))
+        shutil.copyfile(file, file_path)     
+        index += 1
+   
+
+
+def main():
+        data = get_all_data()
+
+        if data is None:
+            print("Issue getting the data")
+            return
+        else: 
+            training_data_set, validation_data_set, test_data_set = split_up_data(data=data)
+            save_files_to("training", training_data_set)
+            save_files_to("validation", validation_data_set)
+            save_files_to("test", test_data_set)
+
+       
+
+
 
 if __name__ == "__main__":
     main()
