@@ -6,7 +6,7 @@ import random
 import cv2 
 import matplotlib.pylab as plt
 import shutil
-
+import math
 
 random.seed(1000)
 
@@ -18,6 +18,15 @@ biome 6 swamp
 biome 29 dark forest
 biome 35 savanna 
 '''
+
+
+biomes = [(1,"plains"),
+              (2, "desert"),
+              (3, "mountains"),
+              (6, "swamp"),
+              (29, "dark_forest"), 
+              (35, "savanna")]
+    
 
 PREPROCCESSED_DIR_PATH = "data/preprocessed/"
 RAW_DATA_DIR_PATH = "data/raw/preprocessed_data/biome_"
@@ -47,45 +56,86 @@ def is_trash(img_path):
 
 
 
+def get_all_data():
+    data = []
 
+    for biome_id, biome_name in biomes:
+        files = glob(RAW_DATA_DIR_PATH + str(biome_id) + "/*.jpg")
+        random.shuffle(files)
 
-def get_biomes(folder_num, biome_name):
-    os.makedirs(PREPROCCESSED_DIR_PATH + str(biome_name))
-    try: 
-        biome = glob(RAW_DATA_DIR_PATH+ str(folder_num) + "/*.jpg")
-    except:
-        print("biomes could not be found in " + RAW_DATA_DIR_PATH)
-        return
+        valid_files = []
+        for f in files:
+            if not is_trash(f):
+                valid_files.append(f)
+
+        selected_files = valid_files[:600]
+
+        for f in selected_files:
+            data.append((biome_name, f))
+
+    return data
     
-    already_collected_set = set()
-    index = 0
-    while index < NUMBER_OF_SAMPLES_PER_BIOME:
-        current_biome_number = random.randrange(0,len(biome))
-        if(already_collected_set.__contains__(current_biome_number)):
-                continue
+def split_up_data(data: list):
+    random.shuffle(data)
+    print(f"Data Set Size: {(len(data))}")
+
+    training_data_set_size = math.ceil(len(data) * 0.70)
+    validation_data_set_size = math.ceil(len(data)* 0.15)
+    test_data_set_size = len(data) - training_data_set_size - validation_data_set_size
+
+    print(f"Training data Set Size: {training_data_set_size}")
+    print(f"Validation data Set Size: {validation_data_set_size}")
+    print(f"Test data Set Size: {test_data_set_size}")
+
+    
+    training_data_set = []
+    validation_data_set = []
+    test_data_set = []
+
+    for i in range(len(data)):
+        if i <= training_data_set_size:
+            training_data_set.append(data[i])
+        elif i <= validation_data_set_size+ training_data_set_size:
+            validation_data_set.append(data[i])
         else:
-            source_path = biome[current_biome_number]
-            if(not is_trash(img_path=source_path)):
-                new_name = f"{biome_name}_{index}.jpg"
-                destination_path = os.path.join(PREPROCCESSED_DIR_PATH, biome_name, new_name)
-                already_collected_set.add(current_biome_number)
-                index += 1
+            test_data_set.append(data[i])
 
-                shutil.copyfile(source_path, destination_path)
+    print(f"Actual training data Set Size: {len(training_data_set)}")
+    print(f"Validation data Set Size: {len(validation_data_set)}")
+    print(f"Test data Set Size: {len(test_data_set)}")
 
+
+    return training_data_set, validation_data_set, test_data_set
+
+
+def save_files_to(folder_name:str, data:list):  
+    folder_path = os.path.join(PREPROCCESSED_DIR_PATH,folder_name)
+    os.makedirs(folder_path, exist_ok=True)
+    
+    index = 1
+    for f in data:
+        biome_name = f[0]
+        file = f[1]
+
+        file_path = os.path.join(folder_path,(f"{index}_{biome_name}.jpg"))
+        shutil.copyfile(file, file_path)     
+        index += 1
+   
 
 
 def main():
-    biomes = [(1,"plains"),
-              (2, "desert"),
-              (3, "mountains"),
-              (6, "swamp"),
-              (29, "dark_forest"), 
-              (35, "savanna")]
-    
-    for biome in biomes:
-        print(f"Processing Biome: {biome[1]}")
-        get_biomes(folder_num=biome[0], biome_name=biome[1])
+        data = get_all_data()
+
+        if data is None:
+            print("Issue getting the data")
+            return
+        else: 
+            training_data_set, validation_data_set, test_data_set = split_up_data(data=data)
+            save_files_to("training", training_data_set)
+            save_files_to("validation", validation_data_set)
+            save_files_to("test", test_data_set)
+
+       
 
 
 
