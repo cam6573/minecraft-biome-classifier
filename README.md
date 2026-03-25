@@ -77,6 +77,8 @@ python code/data_related_scripts/HOG_process_data.py
 │   │       └── validation
 │   └── raw
 │       └── preprocessed_data
+├── models
+│   └── CNN
+│       └── minecraft_biome_cnn.keras
 └── resources
-
 ```
