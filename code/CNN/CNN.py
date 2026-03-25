@@ -69,4 +69,4 @@ history = model.fit(
 )
 
 # Save model
-model.save("minecraft_biome_cnn.keras")
+model.save("./models/CNN/minecraft_biome_cnn.keras")

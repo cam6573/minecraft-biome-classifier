@@ -55,35 +55,28 @@ python code/data_related_scripts/HOG_process_data.py
 .
 ├── README.md
 ├── code
+│   ├── CNN
+│   │   ├── CNN.py
+│   │   ├── predict_an_image.py
+│   │   └── test_all_image.py
 │   └── data_related_scripts
+│       ├── CNN
+│       │   └── CNN_process_data.py
 │       ├── HOG_process_data.py
 │       ├── download_data.py
 │       └── preprocess_data.py
-└── data
-    ├── preprocessed
-    │   ├── dark_forest
-    │   ├── desert
-    │   ├── mountains
-    │   ├── plains
-    │   ├── savanna
-    │   └── swamp
-    ├── processed
-    │   └── HOG
-    │       ├── HOG_vectors
-    │       │   ├── dark_forest
-    │       │   ├── desert
-    │       │   ├── mountains
-    │       │   ├── plains
-    │       │   ├── savanna
-    │       │   └── swamp
-    │       └── images
-    │           ├── dark_forest
-    │           ├── desert
-    │           ├── mountains
-    │           ├── plains
-    │           ├── savanna
-    │           └── swamp
-    └── raw
-        └── preprocessed_data
+├── data
+│   ├── preprocessed
+│   │   ├── test
+│   │   ├── training
+│   │   └── validation
+│   ├── processed
+│   │   └── CNN
+│   │       ├── test
+│   │       ├── training
+│   │       └── validation
+│   └── raw
+│       └── preprocessed_data
+└── resources
 
 ```
