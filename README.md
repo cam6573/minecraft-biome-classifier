@@ -28,9 +28,16 @@ python code/data_related_scripts/download_data.py
 python code/data_related_scripts/preprocess_data.py 
 ```
 
-Process HOG Data: 
+## Train Random Forest Model for Image Classification
+
+1. Extract HOG and color features: 
 ```
-python code/data_related_scripts/HOG_process_data.py
+python code/random_forest/feature_extraction/extract_features.py
+```
+
+2. Train Random Forest Model: 
+```
+python code/random_forest/training.py
 ```
 
 
@@ -41,9 +48,15 @@ python code/data_related_scripts/HOG_process_data.py
 ├── README.md
 ├── code
 │   └── data_related_scripts
-│       ├── HOG_process_data.py
-│       ├── download_data.py
-│       └── preprocess_data.py
+│   |    ├── download_data.py
+│   |    └── preprocess_data.py
+|   └── random_forest
+│   |    ├── feature_extraction
+|   |    |      ├──extract_features.py  
+|   |    |   
+│   |    └── training.py
+│   | 
+|   |
 └── data
     ├── preprocessed
     │   ├── dark_forest
