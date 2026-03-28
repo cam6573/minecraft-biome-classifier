@@ -1,34 +1,65 @@
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier 
 from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import classification_report
 import os
 import matplotlib.pyplot as plt
 from skimage.feature import hog
-import random
-import cv2
-from sklearn.model_selection import train_test_split
-import create_feature_label_vectors as compact_dataset
+import numpy as np
 
-##Biomes List
-
-biomes = [
-        "plains",
-        "desert",
-        "mountains",
-        "swamp",
-        "dark_forest",
-        "savanna"
-    ]
-
-##Create feature and label matrices for training and test sets
-X_train, y_train = compact_dataset.create_compact_matrix_for_all_features(biomes, "train")
-X_test, y_test = compact_dataset.create_compact_matrix_for_all_features(biomes, "test")
+# 1. Load the pre-extracted features
+X_train = np.load('model_matrices/training/X_train.npy')
+y_train = np.load('model_matrices/training/y_train.npy')
 
 
-rf = RandomForestClassifier(n_estimators=100, random_state=42)
-rf.fit(X_train, y_train)
+X_test = np.load('model_matrices/test/X_test.npy')
+y_test = np.load('model_matrices/test/y_test.npy')
 
-# 3. Evaluate
-y_pred = rf.predict(X_test)
+X_val = np.load('model_matrices/validation/X_validation.npy')
+y_val = np.load('model_matrices/validation/y_validation.npy')
+
+print("Training matrices shape")
+print(X_train.shape)
+print(y_train.shape)
+
+print("Test matrices shape")
+
+print(X_test.shape)
+print(y_test.shape)
 
 
-## Fit the Model
+print("Validation matrices shape")
+print(X_val.shape)
+print(y_val.shape)
+
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('classifier', RandomForestClassifier(
+        n_estimators=300,
+        max_depth=50,
+        min_samples_split=5,
+        min_samples_leaf=2,
+        max_features='sqrt',
+        class_weight='balanced_subsample',
+    ))
+])
+
+# 3. Train
+print("Training Random Forest...")
+
+pipeline.fit(X_train, y_train)
+
+train_accuracy = pipeline.score(X_train, y_train)
+test_accuracy = pipeline.score(X_test, y_test)
+val_accuracy = pipeline.score(X_val, y_val)
+
+print(f"Train accuracy: {train_accuracy:.3f}, Test accuracy: {test_accuracy:.3f}")
+print(f"Validation accuracy: {val_accuracy:.3f}")
+
+
+##3. "Confusion Matrix"
+y_pred = pipeline.predict(X_val)
+biomes = ["plains", "desert", "mountains", "swamp", "dark_forest", "savanna"]
+print("\nDetailed Report:")
+print(classification_report(y_val, y_pred, target_names=biomes))
