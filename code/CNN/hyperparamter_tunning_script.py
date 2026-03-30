@@ -2,6 +2,14 @@ from CNN import train_CNN, tune_best_hyperparameters
 from test_all_image import test_given_model
 import matplotlib.pyplot as plt
 
+# Total Predictions: 539 
+# Accurate Predictions: 505 
+# Accuracy: 0.9369202226345084 
+# Best nodes: [32, 64, 128, 128] 
+# Best dropout: 0.2 
+# Best batch size: 16 
+# Validation Accuracy: 0.9222221970558167 
+# Final test accuracy: 0.9369202226345084
 
 batch_size_configuation = [16, 32, 64]
 
@@ -107,3 +115,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
