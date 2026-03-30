@@ -3,6 +3,9 @@ from test_all_image import test_given_model
 import matplotlib.pyplot as plt
 
 
+# WARNING: THIS WILL TAKE A SOLID 30-60 MINUTES TO RUN
+
+
 node_configurations = [
     [16, 64, 64, 64],
     [32, 64, 128, 128],
@@ -17,6 +20,11 @@ epoch_configuration = [
     20
 ]
 
+batch_size_configuation = [
+    16,
+    32,
+    64
+]
 
 def find_best_node_configuration():
     labels = []
@@ -82,15 +90,53 @@ def find_best_epoch(best_conf: list):
 
     return best_epoch, best_accuracy
 
+def find_best_batch_size(best_conf: list, best_epoch: int):
+    labels = []
+    accuracies = []
+    best_accuracy = 0.0
+    best_batch = 0
+
+    for batch_size in batch_size_configuation:
+        model = train_CNN(
+            nodes=best_conf,
+            epochs=best_epoch,
+            batch_size=batch_size
+        )
+        accurate_predictions, total_prediction = test_given_model(model=model)
+
+        accuracy = accurate_predictions / total_prediction
+        accuracies.append(accuracy)
+        labels.append(str(batch_size))
+
+        if best_accuracy < accuracy:
+            best_accuracy = accuracy
+            best_batch = batch_size
+
+    plt.figure(figsize=(10, 5))
+    plt.plot(labels, accuracies, marker='o')
+    plt.xlabel("Batch")
+    plt.ylabel("Accuracy")
+    plt.title("Accuracy for Different Batch Size")
+    plt.ylim(0, 1)
+    plt.grid(True)
+    plt.savefig("resources/CNN/batch_size_config_plot.png")
+    plt.show()
+
+    return best_batch, best_accuracy
+
 
 def main():
-    best_conf, best_conf_accuracy = find_best_node_configuration()
-    print("Best node configuration:", best_conf)
-    print("Accuracy:", best_conf_accuracy)
+    # best_conf, best_conf_accuracy = find_best_node_configuration()
+    # print("Best node configuration:", best_conf)
+    # print("Accuracy:", best_conf_accuracy)
 
-    best_epoch, best_epoch_accuracy = find_best_epoch(best_conf)
-    print("Best epoch:", best_epoch)
-    print("Accuracy:", best_epoch_accuracy)
+    # best_epoch, best_epoch_accuracy = find_best_epoch(best_conf)
+    # print("Best epoch:", best_epoch)
+    # print("Accuracy:", best_epoch_accuracy)
+
+    best_batch, best_batch_accuracy = find_best_batch_size([64, 128, 256, 128], best_epoch=20)
+    print("Best batch size:", best_batch)
+    print("Accuracy:", best_batch_accuracy)
 
 
 if __name__ == "__main__":
@@ -99,3 +145,6 @@ if __name__ == "__main__":
 
 # Best node configuration: [64, 128, 256, 128]
 # Best Epoch configuration: 20
+# Best Batch Size
+
+

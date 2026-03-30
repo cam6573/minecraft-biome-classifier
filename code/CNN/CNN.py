@@ -79,7 +79,14 @@ def train_CNN(
 
 
 def main():
-    train_CNN(True)
+    
+    train_CNN(
+        save=True,
+        epochs=20,
+        nodes=[64, 128, 256, 128]
+
+
+    )
 
 
 if __name__ == "__main__":
