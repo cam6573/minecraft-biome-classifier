@@ -8,8 +8,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.multiclass import OneVsRestClassifier
 import matplotlib.pyplot as plt
 import pandas as pd
-import seaborn as sns
-
+from sklearn.metrics import confusion_matrix
 
 
 training_dataset_path = "data\\preprocessed\\training"
@@ -19,7 +18,7 @@ labels = ['dark_forest', 'desert', 'mountains', 'plains', 'savanna', 'swamp']
 image_size = (64,20)
 
 
-# Load training set, resize, scale ###############################
+# Load data sets, resize, scale ###############################
 
 def load_images_from_folder(folder_path, image_size):
     X = []
@@ -42,27 +41,29 @@ def load_images_from_folder(folder_path, image_size):
 X_train, y_train = load_images_from_folder(training_dataset_path, image_size)
 X_test, y_test = load_images_from_folder(test_dataset_path, image_size)
 X_val, y_val = load_images_from_folder(validation_dataset_path, image_size)
-print("X shape:", X_train.shape)
-print("y shape:", y_train.shape)
 
 X_train = X_train.reshape(X_train.shape[0], -1)
 X_test = X_test.reshape(X_test.shape[0], -1)
 X_val = X_val.reshape(X_val.shape[0], -1)
-print("X_flat shape:", X_train.shape)
 
 
-X_train,X_test,y_train,y_test=train_test_split(X_train,y_train,test_size=0.20,random_state=77,stratify=y_train)
 print("Training set size:", X_train.shape[0])
 print("Test set size:", X_test.shape[0])
+print("Validation set size:", X_val.shape[0])
 
 
-# Test with built in function
-model = SVC(kernel='poly')  # tried 'rbf', 'linear' too, worse accuracy
+#train svm model
+model = SVC(kernel='poly', C=1, degree=3, gamma='scale')
 ovr = OneVsRestClassifier(model)
 # fit model
 ovr.fit(X_train, y_train)
 model.fit(X_train, y_train)
 
 
-y_pred = model.predict(X_test)
-print("Accuracy(library):", accuracy_score(y_test, y_pred))
+y_pred = model.predict(X_val)
+print("Accuracy:", accuracy_score(y_val, y_pred))
+
+cm = confusion_matrix(y_val, y_pred, labels=labels)
+cm_df = pd.DataFrame(cm, index=labels, columns=labels)
+print("Confusion Matrix:")
+print(cm_df)
