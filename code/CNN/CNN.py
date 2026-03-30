@@ -72,10 +72,16 @@ def train_CNN(
         epochs=epochs
     )
 
+    best_val_accuracy = max(history.history["val_accuracy"])
+    best_val_loss = min(history.history["val_loss"])
+
+    print(f"Best validation accuracy: {best_val_accuracy:.4f}")
+    print(f"Best validation loss: {best_val_loss:.4f}")
+
     if save:
         model.save("./models/CNN/minecraft_biome_cnn.keras")
     
-    return model
+    return model, history
 
 
 def main():
@@ -84,8 +90,6 @@ def main():
         save=True,
         epochs=20,
         nodes=[64, 128, 256, 128]
-
-
     )
 
 
