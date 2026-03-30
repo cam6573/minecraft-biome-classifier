@@ -1,3 +1,11 @@
-.venv
+.venv/
 data/
 *.zip
+
+keras_tuner_dir/
+code/CNN/keras_tuner_dir/
+
+__pycache__/
+*.pyc
+*.h5
+*.keras
