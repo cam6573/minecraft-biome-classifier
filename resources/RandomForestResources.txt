@@ -1,0 +1,9 @@
+Random Forest Model:
+https://ernestsrudzitis.com/blog/color-meets-shape-using-histograms-of-gradients-and-colors-to-classify-flowers/
+https://www.geeksforgeeks.org/computer-vision/histogram-of-oriented-gradients/
+https://www.geeksforgeeks.org/machine-learning/random-forest-for-image-classification-using-opencv/
+
+HyperParameter tuning:
+https://stackoverflow.com/questions/31948879/using-explicit-predefined-validation-set-for-grid-search-with-sklearn#:~:text=Comments,-Add%20a%20comment&text=The%20cv%20argument%20of%20the,they%20will%20be%20required%20later).&text=Also%2C%20be%20mindful%20if%20you,the%20best%20fit%20parameters%20accordingly.
+https://medium.com/@prayushshrestha89/random-forest-hyperparameter-tuning-explained-53b669af5953
+https://www.analyticsvidhya.com/blog/2020/03/beginners-guide-random-forest-hyperparameter-tuning/

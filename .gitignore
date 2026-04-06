@@ -1,3 +1,6 @@
 .venv
 data/
 *.zip
+model_matrices/
+code/random_forest/training/best_params.json
+__pycache__

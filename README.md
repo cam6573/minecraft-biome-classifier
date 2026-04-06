@@ -30,16 +30,21 @@ python code/data_related_scripts/preprocess_data.py
 
 ## Train Random Forest Model for Image Classification
 
-1. Extract HOG and color features: 
+To train the random forest model, do the following
+
+1. Run script to create feature and label matrices ( extract HOG and color features): 
 ```
 python code/random_forest/feature_extraction/extract_features.py
 ```
 
-2. Train Random Forest Model: 
+2. Perform hyperparameter tuning to find best parameters 
+```
+python code/random_forest/tuning.py
+```
+3. Train Random Forest Model WITH best hyperparameters: 
 ```
 python code/random_forest/training.py
 ```
-
 
 
 #### Project Structure:

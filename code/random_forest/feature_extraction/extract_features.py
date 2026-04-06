@@ -7,7 +7,7 @@ import numpy as np
 
 
 PREPROCCESSED_DIR_PATH = "data/preprocessed/"
-MATRIX_DIRECTORY_OUTPUT = "model_matrices/"
+MATRIX_DIRECTORY_OUTPUT = "code/random_forest/model_matrices/"
 
 def extract_hog(img):
     features , hog_image = hog(
@@ -82,8 +82,11 @@ def feature_label_vectors_for_datasets():
         "dark_forest",
         "savanna"
     ]
-    X_test,y_test = create_feature_vectors(biomes,"test")
+    print("Creating feature matrix and label vector for Training set...")
     X_train,y_train = create_feature_vectors(biomes,"training")
+    print("Creating feature matrix and label vector for Test set...")
+    X_test,y_test = create_feature_vectors(biomes,"test")
+    print("Creating feature matrix and label vector for Validation set...")
     X_validation,y_validation = create_feature_vectors(biomes,"validation")
 
     os.makedirs(MATRIX_DIRECTORY_OUTPUT,exist_ok=True)
@@ -91,7 +94,7 @@ def feature_label_vectors_for_datasets():
     for sub in ["training", "test", "validation"]:
         os.makedirs(os.path.join(MATRIX_DIRECTORY_OUTPUT, sub), exist_ok=True)
 
-    # Save matrices
+    #save matrices
     np.save(f'{MATRIX_DIRECTORY_OUTPUT}/training/X_train.npy', X_train)
     np.save(f'{MATRIX_DIRECTORY_OUTPUT}/training/y_train.npy', y_train)
     np.save(f'{MATRIX_DIRECTORY_OUTPUT}/test/X_test.npy', X_test)
@@ -99,7 +102,4 @@ def feature_label_vectors_for_datasets():
     np.save(f'{MATRIX_DIRECTORY_OUTPUT}/validation/X_validation.npy', X_validation)
     np.save(f'{MATRIX_DIRECTORY_OUTPUT}/validation/y_validation.npy', y_validation)
 
-    
-if __name__ == "__main__":
-    feature_label_vectors_for_datasets()
-
+feature_label_vectors_for_datasets()
