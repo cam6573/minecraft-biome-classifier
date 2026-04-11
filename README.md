@@ -28,20 +28,44 @@ python code/data_related_scripts/download_data.py
 python code/data_related_scripts/preprocess_data.py 
 ```
 
+
 ## Train Random Forest Model for Image Classification
 
-To train the random forest model, do the following
+After downloading the dataset and preprocessing the images, execute the following steps:
 
-1. Run script to create feature and label matrices ( extract HOG and color features): 
+## Full Pipeline Execution
+
+To run the entire end-to-end process from raw pixels to final evaluation of the Rain Forest Model run the main script from the root directory:  
+```
+python code/random_forest/main.py
+```
+What this does:
+
+1. Feature Extraction: Converts screenshots into numerical feature matrices.
+
+2. Hyperparameter Tuning: Runs a Grid Search to find the best model settings.
+
+3. Final Training: Trains the model using the best parameters.
+
+4. Evaluation: Generates and saves performance graphs and tables
+
+## Running each component individually
+
+To run each part of the pipeline independently:
+
+1. Feature Extraction: Extracts feature (HOG,color histograms) matrix and label vector into .npy files for faster training. 
 ```
 python code/random_forest/feature_extraction/extract_features.py
 ```
 
-2. Perform hyperparameter tuning to find best parameters 
+2. Hyperparameter Tuning: Finds the optimal settings for the Random Forest and saves them to best_params.json
+
 ```
 python code/random_forest/tuning.py
 ```
-3. Train Random Forest Model WITH best hyperparameters: 
+
+3. Train Random Forest Model WITH best hyperparameters: Trains the final model, and performs model evaluation (accuracy table and confusion matrix)
+
 ```
 python code/random_forest/training.py
 ```
@@ -52,16 +76,18 @@ python code/random_forest/training.py
 .
 ├── README.md
 ├── code
-│   └── data_related_scripts
-│   |    ├── download_data.py
-│   |    └── preprocess_data.py
-|   └── random_forest
-│   |    ├── feature_extraction
-|   |    |      ├──extract_features.py  
-|   |    |   
-│   |    └── training.py
-│   | 
-|   |
+│   ├── data_related_scripts
+│   │   ├── download_data.py
+│   │   └── preprocess_data.py
+│   └── random_forest
+│       ├── main.py
+│       ├── evaluation
+│       ├── feature_extraction
+│       │   └── extract_features.py
+│       └── training
+│           ├── load_data.py
+│           ├── training.py
+│           └── tuning.py
 └── data
     ├── preprocessed
     │   ├── dark_forest
@@ -70,22 +96,6 @@ python code/random_forest/training.py
     │   ├── plains
     │   ├── savanna
     │   └── swamp
-    ├── processed
-    │   └── HOG
-    │       ├── HOG_vectors
-    │       │   ├── dark_forest
-    │       │   ├── desert
-    │       │   ├── mountains
-    │       │   ├── plains
-    │       │   ├── savanna
-    │       │   └── swamp
-    │       └── images
-    │           ├── dark_forest
-    │           ├── desert
-    │           ├── mountains
-    │           ├── plains
-    │           ├── savanna
-    │           └── swamp
     └── raw
         └── preprocessed_data
 

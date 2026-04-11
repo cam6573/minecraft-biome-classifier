@@ -102,4 +102,7 @@ def feature_label_vectors_for_datasets():
     np.save(f'{MATRIX_DIRECTORY_OUTPUT}/validation/X_validation.npy', X_validation)
     np.save(f'{MATRIX_DIRECTORY_OUTPUT}/validation/y_validation.npy', y_validation)
 
-feature_label_vectors_for_datasets()
+if __name__ == "__main__":
+    
+    feature_label_vectors_for_datasets()
+

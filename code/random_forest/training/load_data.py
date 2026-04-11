@@ -20,3 +20,6 @@ def load_data():
     print(X_val.shape)
     print(y_val.shape)
     return  X_train,y_train,X_test,y_test,X_val,y_val
+
+if __name__ == "__main__":
+    load_data()
