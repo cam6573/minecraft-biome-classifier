@@ -1,12 +1,8 @@
-from cProfile import label
 import os
 from PIL import Image
 import numpy as np
-from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
-from sklearn.multiclass import OneVsRestClassifier
-import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn.metrics import confusion_matrix
 
@@ -53,17 +49,23 @@ print("Validation set size:", X_val.shape[0])
 
 
 #train svm model
-model = SVC(kernel='poly', C=1, degree=3, gamma='scale')
-ovr = OneVsRestClassifier(model)
+model = SVC(kernel='rbf', C=1, degree=3, gamma='scale')
 # fit model
-ovr.fit(X_train, y_train)
 model.fit(X_train, y_train)
 
-
+#validation accuracy
 y_pred = model.predict(X_val)
 print("Accuracy:", accuracy_score(y_val, y_pred))
 
-cm = confusion_matrix(y_val, y_pred, labels=labels)
-cm_df = pd.DataFrame(cm, index=labels, columns=labels)
+cm_val = confusion_matrix(y_val, y_pred, labels=labels)
+cm_val_df = pd.DataFrame(cm_val, index=labels, columns=labels)
 print("Confusion Matrix:")
-print(cm_df)
+print(cm_val_df)
+
+#test accuracy
+y_pred_test = model.predict(X_test)
+print("Test Accuracy:", accuracy_score(y_test, y_pred_test))
+cm_test = confusion_matrix(y_test, y_pred_test, labels=labels)
+cm_test_df = pd.DataFrame(cm_test, index=labels, columns=labels)
+print("Test Confusion Matrix:")
+print(cm_test_df)
