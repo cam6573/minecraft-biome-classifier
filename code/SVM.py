@@ -5,6 +5,7 @@ from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score
 import pandas as pd
 from sklearn.metrics import confusion_matrix
+from sklearn.preprocessing import StandardScaler
 from skimage.feature import hog
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -18,8 +19,8 @@ image_size = (64,64)
 
 
 
-# Load data sets, resize, scale and extract features
 
+# Load data sets, resize and extract features
 
 def extract_hog(img):
     features , hog_image = hog(
@@ -34,6 +35,17 @@ def extract_hog(img):
     return features, hog_image
 
 
+def extract_color_features(image):
+    img = np.array(image)
+    # RGB channels
+    hist_r = np.histogram(img[:, :, 0], bins=64, range=(0, 256))[0]
+    hist_g = np.histogram(img[:, :, 1], bins=64, range=(0, 256))[0]
+    hist_b = np.histogram(img[:, :, 2], bins=64, range=(0, 256))[0]
+
+    features = np.concatenate([hist_r, hist_g, hist_b])
+
+    return features
+
 def load_images_from_folder(folder_path, image_size):
     X = []
     y = []
@@ -45,9 +57,10 @@ def load_images_from_folder(folder_path, image_size):
             try:
                 image = Image.open(picture_path).convert('RGB')
                 image = image.resize(image_size)
-                hog_features, _ = extract_hog(np.array(image) / 255.0)
-                color_features = np.histogram(np.array(image).ravel(), bins=256, range=(0, 256))[0]
-                features = np.concatenate([hog_features, color_features])
+                image = np.array(image)
+                color_features = extract_color_features(image)
+                HOG_features, _ = extract_hog(image)
+                features = np.concatenate((color_features, HOG_features))
                 X.append(features)
                 y.append(label)
             except Exception as e:
@@ -67,6 +80,15 @@ X_test = X_test.reshape(X_test.shape[0], -1)
 X_val = X_val.reshape(X_val.shape[0], -1)
 
 
+scaler = StandardScaler()
+
+# Fit on training data
+X_train = scaler.fit_transform(X_train)
+
+# Apply same transformation to validation and test
+X_val = scaler.transform(X_val)
+X_test = scaler.transform(X_test)
+
 
 
 print("Training set size:", X_train.shape[0])
@@ -77,7 +99,7 @@ print("Validation set size:", X_val.shape[0])
 
 
 #train svm model
-model = SVC(kernel='rbf', C=10, degree=3, gamma='scale')
+model = SVC(kernel='rbf', C=10)
 # fit model
 model.fit(X_train, y_train)
 
@@ -105,7 +127,7 @@ def plot_confusion_matrix(y_test,y_pred_test,biomes):
     plt.xlabel('Predicted label')
     plt.ylabel('True label')
     plt.title('Confusion Matrix for SVM Model')
-    plt.savefig('code/svm_confusion_matrix.png')
+    plt.savefig('resources/svm_confusion_matrix.png')
 
 
 #validation accuracy
