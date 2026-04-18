@@ -18,8 +18,7 @@ image_size = (64,64)
 
 
 
-
-# Load data sets, resize, scale ###############################
+# Load data sets, resize, scale and extract features
 
 
 def extract_hog(img):
@@ -84,10 +83,7 @@ model.fit(X_train, y_train)
 
 
 
-
-
-
-
+# model evaluation 
 
 def plot_confusion_matrix(y_test,y_pred_test,biomes):
     matrix = confusion_matrix(y_test, y_pred_test)
