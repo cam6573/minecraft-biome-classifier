@@ -13,24 +13,29 @@
 
 ### How to run project 
 
-Set venv
+1. Set venv
 ```
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install 
-python -m pip install kagglehub pandas numpy matplotlib opencv-python scikit-image
 ```
 
-Download DataSet and Select 600 random images for each biom:
+2. Install all required dependencies/libraries
+```
+python -m pip install -r requirements.txt
+```
+
+Download DataSet and Select 600 random images for each biome:
 ```
 python code/data_related_scripts/download_data.py
 python code/data_related_scripts/preprocess_data.py 
 ```
 
+3. Tran and Evaluate SVM, Random Forest or CNN for Minecraft Biome Classification
+
 
 ## Train Random Forest Model for Image Classification
-
 After downloading the dataset and preprocessing the images, execute the following steps:
 
 ## Full Pipeline Execution
