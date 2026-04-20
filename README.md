@@ -56,7 +56,7 @@ What this does:
 
 ## Running each component individually
 
-To run each part of the pipeline independently:
+To run each part of the Random Forest pipeline independently:
 
 1. Feature Extraction: Extracts feature (HOG,color histograms) matrix and label vector into .npy files for faster training. 
 ```
