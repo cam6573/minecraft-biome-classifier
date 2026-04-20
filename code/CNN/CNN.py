@@ -10,6 +10,15 @@ NUM_CLASSES = 6
 TRAIN_DIR = "data/processed/CNN/training"
 VALIDATION_DIR = "data/processed/CNN/validation"
 
+def configure_gpus():
+    gpus = tf.config.list_physical_devices("GPU")
+    if gpus:
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+        print(f"[GPU] {len(gpus)} GPU(s) ready")
+    else:
+        print("[GPU] No GPUs detected — using CPU")
+
 
 def get_datasets(batch_size=32):
     train_ds = tf.keras.utils.image_dataset_from_directory(
@@ -24,44 +33,49 @@ def get_datasets(batch_size=32):
         batch_size=batch_size
     )
 
-    print(f"Classes: {train_ds.class_names}")
+    class_names = train_ds.class_names
+    print(f"Classes: {class_names}")
 
     AUTOTUNE = tf.data.AUTOTUNE
     train_ds = train_ds.shuffle(1000).prefetch(buffer_size=AUTOTUNE)
     val_ds = val_ds.prefetch(buffer_size=AUTOTUNE)
 
-    return train_ds, val_ds
+    return train_ds, val_ds, class_names
 
 
-def create_model(nodes, dropout_rate):
+def create_model(nodes, dropout_rate, learning_rate=1e-3):
     model = keras.Sequential([
         layers.Input(shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
         layers.Rescaling(1. / 255),
 
         layers.RandomFlip("horizontal"), 
 
-        layers.Conv2D(nodes[0], (3, 3), activation='relu'),
+        layers.Conv2D(nodes[0], (3, 3), padding="same", activation='relu'),
         layers.BatchNormalization(),
         layers.MaxPooling2D(),
 
-        layers.Conv2D(nodes[1], (3, 3), activation='relu'),
+        layers.Conv2D(nodes[1], (3, 3), padding="same", activation='relu'),
         layers.BatchNormalization(),
         layers.MaxPooling2D(),
 
-        layers.Conv2D(nodes[2], (3, 3), activation='relu'),
+        layers.Conv2D(nodes[2], (3, 3), padding="same",activation='relu'),
+        layers.BatchNormalization(),
+        layers.MaxPooling2D(),
+
+        layers.Conv2D(nodes[3], (3, 3), padding="same", activation="relu"),
         layers.BatchNormalization(),
         layers.MaxPooling2D(),
 
         layers.Flatten(),
-        layers.Dense(nodes[3], activation='relu'),
+        layers.Dense(nodes[4], activation='relu'),
         layers.Dropout(dropout_rate),
         layers.Dense(NUM_CLASSES, activation='softmax')
     ])
 
     model.compile(
-        optimizer='adam',
+        optimizer=keras.optimizers.Adam(learning_rate=learning_rate),
         loss='sparse_categorical_crossentropy',
-        metrics=['accuracy']
+        metrics=['accuracy'],
     )
 
     return model
@@ -72,6 +86,7 @@ def build_model(hp):
         hp.Choice("conv1_nodes", values=[32, 64, 128]),
         hp.Choice("conv2_nodes", values=[64, 128, 256]),
         hp.Choice("conv3_nodes", values=[128, 256, 512]),
+        hp.Choice("conv4_nodes", values=[128, 256, 512]),
         hp.Choice("dense_nodes", values=[64, 128, 256, 512]),
     ]
 
@@ -79,20 +94,15 @@ def build_model(hp):
 
     learning_rate = hp.Choice("learning_rate", values=[1e-2, 1e-3, 1e-4])
 
-    model = create_model(nodes, dropout_rate)
-    
-    model.compile(
-        optimizer=keras.optimizers.Adam(learning_rate=learning_rate),
-        loss='sparse_categorical_crossentropy',
-        metrics=['accuracy']
-    )
+    model = create_model(nodes, dropout_rate, learning_rate)
     
     return model
 
 
 def tune_best_hyperparameters(batch_size=32, epochs=15, max_trials=20):
-    train_ds, val_ds = get_datasets(batch_size=batch_size)
 
+    configure_gpus()
+    train_ds, val_ds, _ = get_datasets(batch_size=batch_size)
     early_stopping = callbacks.EarlyStopping(
         monitor="val_loss",
         patience=3,
@@ -123,6 +133,7 @@ def tune_best_hyperparameters(batch_size=32, epochs=15, max_trials=20):
         best_hp.get("conv1_nodes"),
         best_hp.get("conv2_nodes"),
         best_hp.get("conv3_nodes"),
+        best_hp.get("conv4_nodes"),
         best_hp.get("dense_nodes"),
     ]
     best_dropout = best_hp.get("dropout_rate")
@@ -131,7 +142,8 @@ def tune_best_hyperparameters(batch_size=32, epochs=15, max_trials=20):
     print(f"nodes: {best_nodes}")
     print(f"dropout_rate: {best_dropout}")
 
-    return best_nodes, best_dropout
+    best_lr = best_hp.get("learning_rate")
+    return best_nodes, best_dropout, best_lr
 
 
 def train_CNN(
@@ -139,14 +151,16 @@ def train_CNN(
     batch_size: int = 32,
     epochs: int = 40,
     nodes: list = None,
-    dropout_rate: float = 0.2
-):
+    dropout_rate: float = 0.2,
+    learning_rate: float = 1e-3):
     if nodes is None:
-        nodes = [64, 128, 256, 128]
+        nodes = [64, 128, 256, 256, 128]
 
-    train_ds, val_ds = get_datasets(batch_size=batch_size)
+    configure_gpus()
 
-    model = create_model(nodes, dropout_rate)
+    train_ds, val_ds, class_names = get_datasets(batch_size=batch_size)
+
+    model = create_model(nodes, dropout_rate, learning_rate)
     model.summary()
 
     early_stopping = callbacks.EarlyStopping(
@@ -172,11 +186,11 @@ def train_CNN(
     if save:
         model.save("./models/CNN/minecraft_biome_cnn.keras")
 
-    return model, history
+    return model, history, class_names
 
 
 def main():
-    best_nodes, best_dropout = tune_best_hyperparameters(
+    best_nodes, best_dropout, best_lr = tune_best_hyperparameters(
         batch_size=32,
         epochs=10,
         max_trials=5
@@ -185,12 +199,13 @@ def main():
     print(f"Best Nodes: {best_nodes}")
     print(f"Best Dropout: {best_dropout}")
 
-    model, history = train_CNN(
+    model, history, class_names = train_CNN(
         save=True,
         batch_size=32,
         epochs=20,
         nodes=best_nodes,
-        dropout_rate=best_dropout
+        dropout_rate=best_dropout,
+        learning_rate=best_lr
     )
 
 
