@@ -81,3 +81,9 @@ python code/data_related_scripts/HOG_process_data.py
         └── preprocessed_data
 
 ```
+
+## To run SVM model:
+
+```
+python /code/SVM.py
+```
