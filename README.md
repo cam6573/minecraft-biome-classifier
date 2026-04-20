@@ -20,7 +20,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install 
-python -m pip install kagglehub pandas numpy matplotlib opencv-python scikit-image tensorflow keras_tuner tensorboard
+python -m pip install kagglehub pandas numpy matplotlib opencv-python scikit-image tensorflow keras_tuner tensorboard, scikit-learn
 ```
 
 Windows:
