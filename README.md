@@ -50,6 +50,12 @@ python code/data_related_scripts/HOG_process_data.py
 
 
 
+
+#### CNN:
+
+The CNN model should be already trained and under `./model/CNN/minecraft_biome_cnn.keras`
+
+
 #### Project Structure:
 ```
 .
