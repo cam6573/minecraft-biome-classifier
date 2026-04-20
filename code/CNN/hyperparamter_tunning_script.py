@@ -1,5 +1,7 @@
 from CNN import train_CNN, tune_best_hyperparameters
 from test_all_image import test_given_model
+import matplotlib
+matplotlib.use('Agg')  # non-interactive backend, no display needed
 import matplotlib.pyplot as plt
 
 # Total Predictions: 539 
@@ -11,7 +13,7 @@ import matplotlib.pyplot as plt
 # Validation Accuracy: 0.9222221970558167 
 # Final test accuracy: 0.9369202226345084
 
-batch_size_configuation = [16, 32, 64]
+batch_size_configuation = [16, 32, 64, 128]
 
 
 def find_best_batch_size(best_nodes, best_dropout):

@@ -38,13 +38,18 @@ def create_model(nodes, dropout_rate):
         layers.Input(shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
         layers.Rescaling(1. / 255),
 
+        layers.RandomFlip("horizontal"), 
+
         layers.Conv2D(nodes[0], (3, 3), activation='relu'),
+        layers.BatchNormalization(),
         layers.MaxPooling2D(),
 
         layers.Conv2D(nodes[1], (3, 3), activation='relu'),
+        layers.BatchNormalization(),
         layers.MaxPooling2D(),
 
         layers.Conv2D(nodes[2], (3, 3), activation='relu'),
+        layers.BatchNormalization(),
         layers.MaxPooling2D(),
 
         layers.Flatten(),
@@ -67,15 +72,25 @@ def build_model(hp):
         hp.Choice("conv1_nodes", values=[32, 64, 128]),
         hp.Choice("conv2_nodes", values=[64, 128, 256]),
         hp.Choice("conv3_nodes", values=[128, 256, 512]),
-        hp.Choice("dense_nodes", values=[64, 128, 256]),
+        hp.Choice("dense_nodes", values=[64, 128, 256, 512]),
     ]
 
-    dropout_rate = hp.Choice("dropout_rate", values=[0.2, 0.3, 0.4])
+    dropout_rate = hp.Choice("dropout_rate", values=[0.1, 0.2, 0.3, 0.4, 0.5])
 
-    return create_model(nodes, dropout_rate)
+    learning_rate = hp.Choice("learning_rate", values=[1e-2, 1e-3, 1e-4])
+
+    model = create_model(nodes, dropout_rate)
+    
+    model.compile(
+        optimizer=keras.optimizers.Adam(learning_rate=learning_rate),
+        loss='sparse_categorical_crossentropy',
+        metrics=['accuracy']
+    )
+    
+    return model
 
 
-def tune_best_hyperparameters(batch_size=32, epochs=10, max_trials=5):
+def tune_best_hyperparameters(batch_size=32, epochs=15, max_trials=20):
     train_ds, val_ds = get_datasets(batch_size=batch_size)
 
     early_stopping = callbacks.EarlyStopping(
