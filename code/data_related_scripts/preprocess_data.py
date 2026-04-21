@@ -135,10 +135,6 @@ def main():
             save_files_to("validation", validation_data_set)
             save_files_to("test", test_data_set)
 
-       
-
-
-
 if __name__ == "__main__":
     main()
 
