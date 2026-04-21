@@ -35,7 +35,6 @@ def training_model_with_best_hyper_parameters():
     test_set_scaled = scaler.transform(X_test)
     validation_set_scaled = scaler.transform(X_val)
 
-
     X_search = np.vstack((training_set_scaled, validation_set_scaled))
     y_search = np.concatenate((y_train, y_val))
     split_index = [-1] * len(X_train) + [0] * len(X_val)

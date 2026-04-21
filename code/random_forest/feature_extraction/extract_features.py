@@ -36,7 +36,7 @@ def extract_color_features(image=None, normalize=True):
                 histogram = histogram / histogram.sum()
 
             histograms.append(histogram)
-
+        
         return np.concatenate(histograms)
 
 def combine_features(img):
@@ -51,7 +51,6 @@ def combine_features(img):
 
     combined_features = np.concatenate([hog_features, color_features])
     return combined_features
-
 
 
 def create_feature_vectors(biome_list,folder:str):
@@ -103,6 +102,5 @@ def feature_label_vectors_for_datasets():
     np.save(f'{MATRIX_DIRECTORY_OUTPUT}/validation/y_validation.npy', y_validation)
 
 if __name__ == "__main__":
-    
     feature_label_vectors_for_datasets()
 

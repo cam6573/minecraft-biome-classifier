@@ -7,3 +7,4 @@ __pycache__
 
 code/adaboost/data/
 *.npy
+code/CNN/keras_tuner_dir/
