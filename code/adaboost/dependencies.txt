@@ -1,5 +1,0 @@
-scikit-learn
-scikit-image
-seaborn
-numpy
-matplotlib
