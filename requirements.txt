@@ -1,0 +1,10 @@
+kagglehub
+pandas
+numpy
+matplotlib
+opencv-python
+scikit-image
+tensorflow
+keras_tuner
+tensorboard
+scikit-learn
