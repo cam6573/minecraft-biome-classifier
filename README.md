@@ -31,6 +31,12 @@ py -m pip install --upgrade pip
 py -m pip install kagglehub pandas numpy matplotlib opencv-python scikit-image
 ```
 
+If you run into issues run the following:
+```
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+```
+
+
 Download DataSet and Select 600 random images for each biom:
 ```
 python code/data_related_scripts/download_data.py
