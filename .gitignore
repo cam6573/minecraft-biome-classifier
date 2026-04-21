@@ -4,3 +4,4 @@ data/
 model_matrices/
 code/random_forest/training/best_params.json
 __pycache__
+code/CNN/keras_tuner_dir/
