@@ -22,10 +22,6 @@ python -m pip install --upgrade pip
 python -m pip install 
 ```
 
-2. Install all required dependencies/libraries
-```
-python -m pip install -r requirements.txt
-```
 
 Windows:
 ```
@@ -40,6 +36,10 @@ If you run into issues run the following:
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
+2. Install all required dependencies/libraries
+```
+python -m pip install -r requirements.txt
+```
 
 Download DataSet and Select 600 random images for each biome:
 ```
@@ -47,13 +47,13 @@ python code/data_related_scripts/download_data.py
 python code/data_related_scripts/preprocess_data.py 
 ```
 
-3. Tran and Evaluate SVM, Random Forest or CNN for Minecraft Biome Classification
+3. Train and Evaluate SVM, Random Forest, Adabost or CNN for Minecraft Biome Classification
 
 
 ## Train Random Forest Model for Image Classification
 After downloading the dataset and preprocessing the images, execute the following steps:
 
-## Full Pipeline Execution
+##### Full Pipeline Execution
 
 To run the entire end-to-end process from raw pixels to final evaluation of the Rain Forest Model run the main script from the root directory:  
 ```
@@ -69,7 +69,7 @@ What this does:
 
 4. Evaluation: Generates and saves performance graphs and tables
 
-## Running each component individually
+##### Running each component individually
 
 To run each part of the Random Forest pipeline independently:
 
@@ -90,14 +90,18 @@ python code/random_forest/training/tuning.py
 python code/random_forest/training/training.py
 ```
 
+## Train SVM Model for Image Classification
+```
+python /code/SVM.py
+```
 
 
-#### CNN:
+## CNN:
 
 The CNN model should be already trained and under `./model/CNN/minecraft_biome_cnn.keras`
 
 
-#### Project Structure:
+## Project Structure:
 ```
 .
 ├── README.md
@@ -125,10 +129,4 @@ The CNN model should be already trained and under `./model/CNN/minecraft_biome_c
     └── raw
         └── preprocessed_data
 
-```
-
-## To run SVM model:
-
-```
-python /code/SVM.py
 ```
