@@ -66,13 +66,13 @@ python code/random_forest/feature_extraction/extract_features.py
 2. Hyperparameter Tuning: Finds the optimal settings for the Random Forest and saves them to best_params.json
 
 ```
-python code/random_forest/tuning.py
+python code/random_forest/training/tuning.py
 ```
 
 3. Train Random Forest Model WITH best hyperparameters: Trains the final model, and performs model evaluation (accuracy table and confusion matrix)
 
 ```
-python code/random_forest/training.py
+python code/random_forest/training/training.py
 ```
 
 

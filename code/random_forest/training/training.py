@@ -41,17 +41,15 @@ def plot_accuracy_comparison(train_acc,test_acc,val_acc):
 
 
 
-def plot_confusion_matrix(y_test,y_pred_test,biomes):
+def plot_confusion_matrix(dataset,y_test,y_pred_test,biomes):
     matrix = confusion_matrix(y_test, y_pred_test)
     matrix = matrix.astype('float') / matrix.sum(axis=1)[:, np.newaxis]
 
-    # Build the plot
     plt.figure(figsize=(16,7))
     sns.set(font_scale=1.4)
     sns.heatmap(matrix, annot=True, annot_kws={'size':10},
                 cmap=plt.cm.Greens, linewidths=0.2)
 
-    # Add labels to the plot
     tick_marks = np.arange(len(biomes))
     tick_marks2 = tick_marks + 0.5
     plt.xticks(tick_marks, biomes, rotation=25)
@@ -59,7 +57,7 @@ def plot_confusion_matrix(y_test,y_pred_test,biomes):
     plt.xlabel('Predicted label')
     plt.ylabel('True label')
     plt.title('Confusion Matrix for Random Forest Model')
-    plt.savefig('code/random_forest/evaluation/confusion_matrix.png')
+    plt.savefig(f'code/random_forest/evaluation/{dataset}confusion_matrix.png')
 
 def training_process():
     X_train,y_train,X_test,y_test,X_val,y_val = load_data.load_data()
@@ -67,7 +65,7 @@ def training_process():
     with open('code/random_forest/training/best_params.json','r') as j:
         best_parameters = json.load(j)
     
-
+    ##Pipeline handles scaling
     pipeline = Pipeline([
         ('scaler', StandardScaler()),
         ('classifier', RandomForestClassifier(
@@ -84,7 +82,11 @@ def training_process():
     print("Training Random Forest...")
     pipeline.fit(X_train, y_train)
 
+    ##predictions
     y_pred_test = pipeline.predict(X_test)
+    y_pred_train = pipeline.predict(X_train)
+
+    ##accuracy
     train_accuracy = pipeline.score(X_train, y_train)
     test_accuracy = pipeline.score(X_test, y_test)
     val_accuracy = pipeline.score(X_val, y_val)
@@ -92,10 +94,14 @@ def training_process():
     plot_accuracy_comparison(train_accuracy,test_accuracy,val_accuracy)
 
     biomes = ["plains", "desert", "mountains", "swamp", "dark_forest", "savanna"]
+    print("Training Set Classification Report: ")
+    print(classification_report(y_train, y_pred_train, target_names=biomes))
     print("Test Set Classification Report:")
     print(classification_report(y_test, y_pred_test, target_names=biomes))
-    plot_confusion_matrix(y_test,y_pred_test,biomes)
 
+    ##Confusion matrix
+    plot_confusion_matrix("test",y_test,y_pred_test,biomes)
+    plot_confusion_matrix("training",y_test,y_pred_test,biomes)
 
 
 if __name__ == "__main__":
