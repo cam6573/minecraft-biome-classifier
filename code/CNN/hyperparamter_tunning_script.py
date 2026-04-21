@@ -14,14 +14,29 @@ from sklearn.metrics import (
 )
 from sklearn.preprocessing import label_binarize
 
-# Total Predictions: 539 
-# Accurate Predictions: 505 
-# Accuracy: 0.9369202226345084 
-# Best nodes: [32, 64, 128, 128] 
-# Best dropout: 0.2 
-# Best batch size: 16 
-# Validation Accuracy: 0.9222221970558167 
-# Final test accuracy: 0.9369202226345084
+# Total Predictions: 539
+# Accurate Predictions: 506
+# Accuracy: 0.9387755102040817
+
+# =======================================================
+# FINAL RESULTS
+# =======================================================
+#   Best nodes          : [128, 64, 256, 256, 256]
+#   Best dropout        : 0.4
+#   Best learning rate  : 0.0001
+#   Best batch size     : 32
+#   Validation accuracy : 0.9556
+#   Test accuracy       : 0.9388
+#   Macro Precision     : 0.9539
+#   Macro Recall        : 0.9566
+#   Macro F1-Score      : 0.9546
+#   ROC-AUC (macro)     : 0.9968
+#   ROC-AUC (weighted)  : 0.9970
+# =======================================================
+
+#   Total predictions    : 539
+#   Accurate predictions : 506
+# =======================================================
 
 batch_size_configuation = [16, 32, 64, 128]
 RESOURCES_DIR = "resources/CNN"
