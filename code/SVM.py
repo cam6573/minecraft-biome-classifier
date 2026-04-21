@@ -11,9 +11,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-training_dataset_path = "data\\preprocessed\\training"
-test_dataset_path = "data\\preprocessed\\test"
-validation_dataset_path = "data\\preprocessed\\validation"
+training_dataset_path = "data/preprocessed/training"
+test_dataset_path = "data/preprocessed/test"
+validation_dataset_path = "data/preprocessed/validation"
 labels = ['dark_forest', 'desert', 'mountains', 'plains', 'savanna', 'swamp']
 image_size = (64,64)
 
